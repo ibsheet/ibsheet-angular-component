@@ -275,4 +275,4 @@ The component automatically handles cleanup, but ensure you:
 
 ## License
 
-Please refer to your IBSheet license for usage terms and conditions.
+[MIT](./LICENSE)

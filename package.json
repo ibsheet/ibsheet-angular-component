@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "build": "ng build ibsheet-angular",
+    "postbuild": "shx cp README.md LICENSE dist/ibsheet-angular/",
     "build:demo": "ng build demo",
     "test": "ng test ibsheet-angular",
     "lint": "ng lint",
@@ -45,6 +46,7 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "ng-packagr": "^20.1.0",
+    "shx": "^0.4.0",
     "typescript": "~5.8.2"
   }
 }
