@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "build": "ng build ibsheet-angular",
-    "postbuild": "shx cp README.md LICENSE dist/ibsheet-angular/",
+    "postbuild": "shx cp projects/ibsheet-angular/README.md LICENSE dist/ibsheet-angular/",
     "build:demo": "ng build demo",
     "test": "ng test ibsheet-angular",
     "lint": "ng lint",

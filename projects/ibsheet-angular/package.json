@@ -9,6 +9,14 @@
     "grid",
     "component"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ibsheet/ibsheet-angular-component.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ibsheet/ibsheet-angular-component/issues"
+  },
+  "homepage": "https://www.ibsheet.com/",
   "peerDependencies": {
     "@angular/common": "^17.0.0 || ^18.0.0",
     "@angular/core": "^17.0.0 || ^18.0.0"
