@@ -1,0 +1,20 @@
+{
+  "name": "ibsheet-angular",
+  "version": "1.0.0",
+  "description": "Angular wrapper component for IBSheet",
+  "license": "MIT",
+  "keywords": [
+    "angular",
+    "ibsheet",
+    "grid",
+    "component"
+  ],
+  "peerDependencies": {
+    "@angular/common": "^17.0.0 || ^18.0.0",
+    "@angular/core": "^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "sideEffects": false
+}
