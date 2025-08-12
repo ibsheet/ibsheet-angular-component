@@ -5,9 +5,6 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "ibsheet-angular": [
-        "./dist/ibsheet-angular"
-      ]
     },
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
@@ -18,7 +15,11 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve"
+    "module": "ES2022",
+    "declaration": true,
+    "types": [],
+    "moduleResolution": "node"
+
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

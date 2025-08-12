@@ -16,8 +16,14 @@ An Angular wrapper component for IBSheet, providing seamless integration of IBSh
 
 Make sure you have IBSheet library loaded in your project before using this component.
 
+Using npm:
 ```bash
-yarn install ibsheet-angular
+npm install @ibsheet/angular
+```
+
+Using yarn:
+```bash
+yarn add @ibsheet/angular
 ```
 
 ## Usage
@@ -26,7 +32,7 @@ yarn install ibsheet-angular
 
 ```typescript
 import { Component } from '@angular/core';
-import { IBSheetAngular, type IBSheetOptions } from 'ibsheet-angular';
+import { IBSheetAngular, type IBSheetOptions } from '@ibsheet/angular';
 
 @Component({
   selector: 'app-example',
@@ -66,7 +72,9 @@ export class ExampleComponent {
 
 ```typescript
 import { Component } from '@angular/core';
-import { IBSheetAngular, IB_Preset, type IBSheetInstance, type IBSheetOptions } from 'ibsheet-angular';
+import { IBSheetAngular, IB_Preset, type IBSheetInstance, type IBSheetOptions, type IBSheetEvents } from '@ibsheet/angular';
+
+type OnAfterChangeParam = Parameters<NonNullable<IBSheetEvents['onAfterChange']>>[0];
 
 @Component({
   selector: 'app-advanced',
@@ -76,7 +84,7 @@ import { IBSheetAngular, IB_Preset, type IBSheetInstance, type IBSheetOptions } 
     <div>
       <div>
         <button (click)="addRow()">Add Row</button>
-        <button (click)="getData()">Get Data</button>
+        <button (click)="getDataRows()">Get DataRows</button>
       </div>
       
       <ibsheet-angular
@@ -84,7 +92,7 @@ import { IBSheetAngular, IB_Preset, type IBSheetInstance, type IBSheetOptions } 
         [data]="sheetData"
         [sync]="false"
         [style]="customStyle"
-        (sheetInstance)="onSheetReady($event)">
+        (instance)="getInstance($event)">
       </ibsheet-angular>
     </div>
   `
@@ -118,13 +126,13 @@ export class AdvancedComponent {
     border: '1px solid #ccc'
   };
 
-  onSheetReady(sheet: any): void {
-    console.log('Sheet instance ready:', sheet);
-    this.sheet = sheet;
+  getInstance(obj: IBSheetInstance): void {
+    console.log('Sheet instance ready:', obj);
+    this.sheet = obj;
     
     // Set up event listeners or perform initial operations
-    if (sheet.addEventListener) {
-      sheet.addEventListener('onAfterChange', (event: any) => {
+    if (this.sheet.addEventListener) {
+      this.sheet.addEventListener('onAfterChange', (event: OnAfterChangeParam) => {
         console.log('Data changed value:', event.val);
       });
     }
@@ -136,11 +144,32 @@ export class AdvancedComponent {
     }
   }
 
-  getData(): void {
+  getDataRows(): void {
     if (this.sheet && this.sheet.getDataRows) {
       const data = this.sheet.getDataRows();
       console.log('Sheet data:', data);
     }
+  }
+}
+```
+
+### Reuse existing IBSheet instances
+
+```typescript
+@Component({
+  template: `
+    <ibsheet-angular
+      [exgSheet]="existingSheet"
+      [style]="sheetStyle">
+    </ibsheet-angular>
+  `
+})
+export class ReuseExampleComponent {
+  existingSheet?: IBSheetInstance;
+  
+  constructor() {
+    // Reuse IBSheet instances created elsewhere
+    this.existingSheet = someExistingSheetInstance;
   }
 }
 ```
@@ -153,12 +182,13 @@ export class AdvancedComponent {
 | `data` | `any[]` | ❌ | `[]` | Initial data for the spreadsheet |
 | `sync` | `boolean` | ❌ | `false` | Enable data synchronization |
 | `style` | `any` | ❌ | `{ width: '100%', height: '800px' }` | Container styling object |
+| `exgSheet` | `IBSheetInstance` | ❌ | - | Existing IBSheet instance to reuse |
 
 ## Output Events
 
 | Event | Type | Description |
 |-------|------|-------------|
-| `sheetInstance` | `EventEmitter<any>` | Emitted when the IBSheet instance is created and ready |
+| `instance` | `EventEmitter<any>` | Emitted when the IBSheet instance is created and ready |
 
 ## Component Lifecycle
 
@@ -187,15 +217,18 @@ export interface IBSheetOptions {
 }
 ```
 
+IBSheet interface: https://www.npmjs.com/package/@ibsheet/interface
+
 ## Standalone Component
 
 This component is built as an Angular standalone component, making it easy to use without module declarations:
 
 ```typescript
-import { IBSheetAngular } from './ibsheet-angular.component';
+import { IBSheetAngular } from '@ibsheet/angular';
 
 @Component({
   // ...
+  standalone: true,
   imports: [IBSheetAngular], // Direct import
 })
 ```
@@ -219,7 +252,7 @@ If you're using traditional Angular modules instead of standalone components:
 
 ```typescript
 import { NgModule } from '@angular/core';
-import { IBSheetAngular } from './ibsheet-angular.component';
+import { IBSheetAngular } from '@ibsheet/angular';
 
 @NgModule({
   imports: [IBSheetAngular], // Import the standalone component
@@ -266,12 +299,28 @@ The component automatically handles cleanup, but ensure you:
 - Don't hold references to the sheet instance after component destruction
 - Remove any custom event listeners you've added
 
-## Best Practices
+## load to IBSheet
 
-1. **Error Handling**: Always handle the `sheetInstance` event to capture initialization errors
-2. **Performance**: Set `sync: false` unless real-time synchronization is required
-3. **Styling**: Use CSS classes instead of inline styles for better maintainability
-4. **Data Management**: Keep data immutable and update through Angular's change detection
+Using Including External Script
+
+ex) in index.html
+```html
+<link rel="stylesheet" href="ibsheet_path/css/default/main.css"/>
+
+<script src="ibsheet_path/ibsheet.js"></script>
+<script src="ibsheet_path/locale/ko.js"></script>
+<script src="ibsheet_path/plugins/ibsheet-common.js"></script>
+<script src="ibsheet_path/plugins/ibsheet-dialog.js"></script>
+<script src="ibsheet_path/plugins/ibsheet-excel.js"></script>
+```
+
+Using IBSheetLoader
+reference: https://www.npmjs.com/package/@ibsheet/loader
+manual: https://ibsheet.github.io/loader-manual
+
+## IBSheet Manual
+
+https://docs.ibsheet.com/ibsheet/v8/manual/#docs/intro/1introduce
 
 ## License
 

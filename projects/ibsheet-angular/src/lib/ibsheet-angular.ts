@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, ElementRef, OnDestroy, AfterViewInit, output } from '@angular/core';
+import { Component, Input, OnInit, ElementRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IBSheetOptions } from './ibsheet-angular.interface'
+import type { IBSheetCreateOptions, IBSheetInstance, IBSheetOptions } from '@ibsheet/interface';
 
 @Component({
   selector: 'ibsheet-angular',
@@ -15,13 +15,16 @@ export class IBSheetAngular implements OnInit, AfterViewInit, OnDestroy {
   @Input() sync?: boolean;
   @Input() style: any;
 
-  @Output() sheetInstance = new EventEmitter<any>();
+  // 기존에 생성된 IBSheetInstance를 입력받아 재사용 가능
+  @Input() exgSheet?: IBSheetInstance;
 
-  public containerId: string;
-  public sheetId: string;
+  @Output() instance = new EventEmitter<IBSheetInstance>();
 
-  private sheetObj: any;
-  private retryInterval: any;
+  public readonly containerId: string;
+  public readonly sheetId: string;
+
+  private sheetObj: IBSheetInstance | undefined;
+  private retryInterval: ReturnType<typeof setInterval> | null = null;
 
   private sheetContainer: HTMLDivElement | null = null;
 
@@ -31,8 +34,6 @@ export class IBSheetAngular implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // console.log('IBSheet Angular Component initialized with ID:', this.containerId);
-    // console.log('IBSheet Angular Component initialized with sheet ID:', this.sheetId);
     if (!this.options) {
       console.error ('[IBSheetAngular] required input value "options" not set');
       throw new Error ('[IBSheetAngular] "options" is a required input; you must provide an IBSheet setting object');
@@ -41,10 +42,26 @@ export class IBSheetAngular implements OnInit, AfterViewInit, OnDestroy {
 
   async ngAfterViewInit(): Promise<void> {
     this.createManualDiv();
+    // this.initializeSheet();
+    if (this.exgSheet) {
+      this.sheetObj = this.exgSheet;
 
-    setTimeout(() => {
+      if (this.sheetContainer) {
+        const oldEl = document.getElementById(this.sheetId);
+        if (oldEl && oldEl.parentElement !== this.sheetContainer) {
+          const parent = oldEl.parentElement;
+          if (parent) {
+            parent.removeChild(oldEl);
+          }
+          this.sheetContainer.appendChild(oldEl);
+        }
+      }
+
+      this.instance.emit(this.sheetObj);
+    } else {
+      // 기존 시트가 없으면 새로 생성
       this.initializeSheet();
-    }, 100);
+    }
   }
 
   private createManualDiv(): void {
@@ -52,8 +69,8 @@ export class IBSheetAngular implements OnInit, AfterViewInit, OnDestroy {
     if (container) {
       const targetStyle = this.style || { width: '100%', height: '800px' };
   
-      Object.keys(targetStyle).forEach(key => {
-        (container.style as any)[key] = targetStyle[key];
+      Object.entries(targetStyle).forEach(([key, value]) => {
+        (container.style as any)[key] = value;
       });
       
       container.id = this.containerId;
@@ -65,11 +82,13 @@ export class IBSheetAngular implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if (this.retryInterval) {
+      clearInterval(this.retryInterval);
+      this.retryInterval = null;
+    }
     if (this.sheetObj) {
       try {
-        if (this.sheetObj.dispose) {
-          this.sheetObj.dispose();
-        }
+        this.sheetObj.dispose?.();
       } catch (error) {
         console.warn('Error disposing IBSheet instance:', error);
       }
@@ -95,24 +114,30 @@ export class IBSheetAngular implements OnInit, AfterViewInit, OnDestroy {
       this.retryInterval = setInterval(() => {
         const IBSheet = (window as any).IBSheet;
         if (IBSheet && IBSheet.version) {
-          clearInterval(this.retryInterval);
+          if (this.retryInterval) {
+            clearInterval(this.retryInterval);
+            this.retryInterval = null;
+          }
 
-          this.sheetObj = IBSheet.create({
+          const opt: IBSheetCreateOptions = {
             id: this.sheetId,
-            el: this.sheetContainer,
+            el: this.sheetContainer || undefined,
             options: this.options,
-            data: this.data ?? [],
+            data: this.data,
             sync: this.sync ?? false
-          });
+          }
 
-          this.sheetInstance.emit(this.sheetObj);
+          this.sheetObj = IBSheet.create(opt);
+
+          this.instance.emit(this.sheetObj);
         } else {
           retryCount++;
           if (retryCount >= maxRetries) {
-            clearInterval(this.retryInterval);
-            console.error ('[initializeIBSheet] IBSheet Initialization Failed: Maximum Retry Exceeded');
-          } else {
-            // console.warn(`[initializeIBSheet] Waiting to load IBSheet... ${retryCount * 100}ms`);
+            if (this.retryInterval) {
+              clearInterval(this.retryInterval);
+              this.retryInterval = null;
+            }
+            console.error('[initializeIBSheet] IBSheet Initialization Failed: Maximum Retry Exceeded');
           }
         }
       }, intervalTime);
