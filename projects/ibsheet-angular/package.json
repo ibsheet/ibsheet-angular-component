@@ -1,7 +1,6 @@
 {
   "name": "@ibsheet/angular",
   "version": "1.0.1",
-  "description": "Angular wrapper component for IBSheet",
   "exports": {
     ".": {
       "types": "./index.d.ts",

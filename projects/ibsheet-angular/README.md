@@ -315,8 +315,8 @@ ex) in index.html
 ```
 
 Using IBSheetLoader
-reference: https://www.npmjs.com/package/@ibsheet/loader
-manual: https://ibsheet.github.io/loader-manual
+- reference: https://www.npmjs.com/package/@ibsheet/loader
+- manual: https://ibsheet.github.io/loader-manual
 
 ## IBSheet Manual
 
