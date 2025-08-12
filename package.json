@@ -6,7 +6,7 @@
     "ng": "ng",
     "build": "ng build ibsheet-angular && yarn copy-package",
     "copy-package": "node scripts/copy-package.cjs",
-    "postbuild": "shx cp projects/ibsheet-angular/README.md LICENSE dist/ibsheet-angular/",
+    "postbuild": "shx cp projects/ibsheet-angular/README.md LICENSE CHANGELOG.md dist/ibsheet-angular/",
     "build:demo": "ng build demo",
     "test": "ng test ibsheet-angular",
     "lint": "ng lint",
@@ -15,7 +15,6 @@
     "release": "standard-version",
     "release:minor": "standard-version --release-as minor",
     "release:major": "standard-version --release-as major",
-    "postrelease": "shx cp CHANGELOG.md dist/ibsheet-angular",
     "release:publish": "yarn release && cd dist/ibsheet-angular && npm publish --access public"
   },
   "prettier": {
