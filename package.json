@@ -1,6 +1,6 @@
 {
   "name": "ibsheet-angular-component",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -52,9 +52,9 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "standard-version": "^9.5.0",
     "ng-packagr": "^20.1.0",
     "shx": "^0.4.0",
+    "standard-version": "^9.5.0",
     "typescript": "~5.8.2"
   }
 }
