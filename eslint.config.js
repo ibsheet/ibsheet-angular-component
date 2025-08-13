@@ -13,6 +13,9 @@ const compat = new FlatCompat({
 export default [
   ...compat.extends("plugin:@angular-eslint/recommended"),
   ...compat.extends("plugin:@angular-eslint/template/process-inline-templates"),
+  {
+    ignores: ["dist/**/*", "node_modules/**/*"],
+  },
   // 👇 라이브러리 (ibsheet-angular) 설정
   {
     files: ["projects/ibsheet-angular/**/*.ts"],
@@ -101,8 +104,5 @@ export default [
       "@angular-eslint/template": angularEslintTemplatePlugin,
     },
     rules: angularEslintTemplatePlugin.configs.recommended.rules,
-  },
-  {
-    ignores: ["dist/**/*", "node_modules/**/*"],
   },
 ];
