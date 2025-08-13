@@ -4,8 +4,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "strict": true,
-    "paths": {
-    },
+    "paths": {},
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
@@ -19,7 +18,6 @@
     "declaration": true,
     "types": [],
     "moduleResolution": "node"
-
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

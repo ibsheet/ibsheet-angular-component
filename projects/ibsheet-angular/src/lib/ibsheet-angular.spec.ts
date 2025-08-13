@@ -8,9 +8,8 @@ describe('IbsheetAngular', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IBSheetAngular]
-    })
-    .compileComponents();
+      imports: [IBSheetAngular],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(IBSheetAngular);
     component = fixture.componentInstance;

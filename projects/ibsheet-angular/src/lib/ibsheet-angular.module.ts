@@ -3,6 +3,6 @@ import { IBSheetAngular } from './ibsheet-angular';
 
 @NgModule({
   imports: [IBSheetAngular],
-  exports: [IBSheetAngular]
+  exports: [IBSheetAngular],
 })
-export class IBSheetAngularModule { }
+export class IBSheetAngularModule {}
