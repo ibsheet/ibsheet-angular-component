@@ -316,7 +316,8 @@ https://docs.ibsheet.com/ibsheet/v8/manual/#docs/intro/1introduce
 
 ## Sample
 
-https://github.com/ibsheet/ibsheet-angular-sample.git
+- https://github.com/ibsheet/ibsheet-angular-sample.git
+- https://github.com/ibsheet/loader-angular-guide-sample.git
 
 ## License
 
