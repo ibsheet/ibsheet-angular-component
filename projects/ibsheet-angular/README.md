@@ -42,7 +42,6 @@ import { IBSheetAngular, type IBSheetOptions } from "@ibsheet/angular";
   imports: [IBSheetAngular],
   template: `
     <div>
-      <h1>My Spreadsheet</h1>
       <ibsheet-angular [options]="sheetOptions" [data]="sheetData"> </ibsheet-angular>
     </div>
   `,
@@ -54,26 +53,37 @@ export class ExampleComponent {
       HeaderMerge: 3,
     },
     Cols: [
-      { Header: "ID", Type: "Text", Name: "id" },
+      { Header: "ID", Type: "Text", Name: "sId" },
       { Header: "Name", Type: "Text", Name: "name" },
       { Header: "Age", Type: "Int", Name: "age" },
     ],
   };
 
   sheetData = [
-    { id: "1", name: "John Doe", age: 30 },
-    { id: "2", name: "Jane Smith", age: 25 },
+    { sId: "1", name: "John Doe", age: 30 },
+    { sId: "2", name: "Jane Smith", age: 25 },
   ];
 }
 ```
+
+Example: https://stackblitz.com/edit/stackblitz-starters-e5wa2tt7
 
 ### Advanced Usage with Event Handling
 
 ```typescript
 import { Component } from "@angular/core";
-import { IBSheetAngular, IB_Preset, type IBSheetInstance, type IBSheetOptions, type IBSheetEvents } from "@ibsheet/angular";
+import { 
+  IBSheetAngular, 
+  IB_Preset, 
+  type IBSheetInstance, 
+  type IBSheetOptions, 
+  type IBSheetEvents 
+} from "@ibsheet/angular";
 
-type OnAfterChangeParam = Parameters<NonNullable<IBSheetEvents["onAfterChange"]>>[0];
+const handleAfterChange: IBSheetEvents['onAfterChange'] = (param) => { 
+  // The type of the parameter is automatically inferred.
+  console.log('Data changed value:', param.val); 
+};
 
 @Component({
   selector: "app-advanced",
@@ -82,8 +92,8 @@ type OnAfterChangeParam = Parameters<NonNullable<IBSheetEvents["onAfterChange"]>
   template: `
     <div>
       <div>
-        <button (click)="addRow()">Add Row</button>
-        <button (click)="getDataRows()">Get DataRows</button>
+        <button (click)="handleAddRow()">Add Row</button>
+        <button (click)="handleExportExcel()">Export Excel</button>
       </div>
 
       <ibsheet-angular [options]="sheetOptions" [data]="sheetData" [sync]="false" [style]="customStyle" (instance)="getInstance($event)"> </ibsheet-angular>
@@ -91,7 +101,7 @@ type OnAfterChangeParam = Parameters<NonNullable<IBSheetEvents["onAfterChange"]>
   `,
 })
 export class AdvancedComponent {
-  private sheet: IBSheetInstance | undefined;
+  private mySheet: IBSheetInstance | undefined;
 
   sheetOptions: IBSheetOptions = {
     // Your IBSheet configuration options
@@ -100,17 +110,20 @@ export class AdvancedComponent {
       HeaderMerge: 3,
     },
     Cols: [
-      { Header: "ID", Type: "Text", Name: "id" },
+      { Header: "ID", Type: "Text", Name: "sId" },
       { Header: "Name", Type: "Text", Name: "name" },
       { Header: "Age", Type: "Int", Name: "age" },
-      { Header: "Ymd", Name: "sDate_Ymd", Extend: IB_Preset.YMD, Width: 110 },
-      { Header: "Ym", Name: "sDate_Ym", Extend: IB_Preset.YM, Width: 90 },
-      { Header: "Md", Name: "sDate_Md", Extend: IB_Preset.MD, Width: 90 },
+      { Header: "Ymd", Name: "sDate_Ymd", Extend: IB_Preset.YMD, Width: 110 }
     ],
+    Events: {
+      onAfterChange: handleAfterChange
+    }
   };
 
   sheetData = [
     // Your data
+    { sId: '1', name: 'John Doe', age: 30, sDate_Ymd: '20250923' },
+    { sId: '2', name: 'Jane Smith', age: 25, sDate_Ymd: '20251002' }
   ];
 
   customStyle = {
@@ -119,32 +132,28 @@ export class AdvancedComponent {
     border: "1px solid #ccc",
   };
 
-  getInstance(obj: IBSheetInstance): void {
-    console.log("Sheet instance ready:", obj);
-    this.sheet = obj;
+  getInstance(sheet: IBSheetInstance): void {
+    // You can store the sheet instance or perform initial operations
+    this.mySheet = sheet;
+  }
 
-    // Set up event listeners or perform initial operations
-    if (this.sheet.addEventListener) {
-      this.sheet.addEventListener("onAfterChange", (event: OnAfterChangeParam) => {
-        console.log("Data changed value:", event.val);
-      });
+  handleAddRow(): void {
+    if (this.mySheet) {
+      this.mySheet.addRow();
     }
   }
 
-  addRow(): void {
-    if (this.sheet && this.sheet.addRow) {
-      this.sheet.addRow();
-    }
-  }
-
-  getDataRows(): void {
-    if (this.sheet && this.sheet.getDataRows) {
-      const data = this.sheet.getDataRows();
-      console.log("Sheet data:", data);
+  handleExportExcel(): void {
+    if (this.mySheet) {
+      // exportData method requires the jsZip library
+      // When checking for the jsZip library, if it hasn't been loaded separately, the file at ./plugins/jszip.min.js (relative to ibsheet.js) will be loaded automatically.
+      this.mySheet.exportData({fileName:'ibsheet_angular_export_example.xlsx'});
     }
   }
 }
 ```
+
+Example: https://stackblitz.com/edit/stackblitz-starters-y4wxdjox
 
 ### Reuse existing IBSheet instances
 
