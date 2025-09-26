@@ -35,10 +35,12 @@ const distPackage = {
   },
   peerDependencies: {
     "@angular/common": ">=17.0.0",
-    "@angular/core": ">=17.0.0"
+    "@angular/core": ">=17.0.0",
+    "typescript": ">=5.0.0"
   },
   dependencies: {
     "tslib": ">=2.3.0",
+    "@types/node": ">=18.0.0",
     "@ibsheet/interface": "latest"
   },
   sideEffects: ["**/*.js"]
