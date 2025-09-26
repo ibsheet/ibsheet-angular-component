@@ -1,6 +1,5 @@
 {
   "name": "@ibsheet/angular",
-  "version": "1.0.1",
   "exports": {
     ".": {
       "types": "./index.d.ts",
@@ -31,7 +30,7 @@
   },
   "dependencies": {
     "tslib": ">=2.3.0",
-    "@ibsheet/interface": ">=1.0.0"
+    "@ibsheet/interface": "latest"
   },
   "sideEffects": [
     "**/*.js"

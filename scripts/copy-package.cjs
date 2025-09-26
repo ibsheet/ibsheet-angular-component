@@ -31,9 +31,6 @@ const distPackage = {
       default: "./fesm2022/ibsheet-angular.mjs",
       import: "./fesm2022/ibsheet-angular.mjs",
       require: "./fesm2022/ibsheet-angular.mjs"
-    },
-    "./package.json": {
-      "default": "./package.json"
     }
   },
   peerDependencies: {
@@ -42,7 +39,7 @@ const distPackage = {
   },
   dependencies: {
     "tslib": ">=2.3.0",
-    "@ibsheet/interface": ">=1.0.0"
+    "@ibsheet/interface": "latest"
   },
   sideEffects: ["**/*.js"]
 }
