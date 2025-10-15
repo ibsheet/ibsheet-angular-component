@@ -128,7 +128,39 @@ export class IBSheetAngular implements OnInit, AfterViewInit, OnDestroy {
 
       this.retryInterval = setInterval(() => {
         const IBSheet = (window as any).IBSheet;
-        if (IBSheet && IBSheet.version) {
+        const IBSheetLoader = (window as any).IBSheetLoader;
+        // IBSheetLoader 사용 시, loader가 로드 완료된 후에 IBSheet 객체가 생성되도록 조건 추가
+        if (IBSheetLoader && IBSheet) {
+          const loaderState = IBSheetLoader['_status'];
+          if (loaderState == 0 && IBSheet && IBSheet.version) {
+            if (this.retryInterval) {
+              clearInterval(this.retryInterval);
+              this.retryInterval = null;
+            }
+
+            const opt: IBSheetCreateOptions = {
+              id: this.sheetId,
+              el: this.sheetContainer || undefined,
+              options: this.options,
+              data: this.data,
+              sync: this.sync ?? false,
+            };
+
+            this.sheetObj = IBSheet.create(opt);
+
+            this.instance.emit(this.sheetObj);
+          }
+          retryCount++;
+          if (retryCount >= maxRetries) {
+            if (this.retryInterval) {
+              clearInterval(this.retryInterval);
+              this.retryInterval = null;
+            }
+            console.error(
+              '[initializeIBSheet] IBSheet Initialization Failed: Maximum Retry Exceeded',
+            );
+          }
+        } else if (IBSheet && IBSheet.version) {
           if (this.retryInterval) {
             clearInterval(this.retryInterval);
             this.retryInterval = null;
